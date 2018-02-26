@@ -8,12 +8,11 @@
     mc:Ignorable="d">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <Rectangle Name="touchRectangle" Fill="Blue" 
-               ManipulationMode="All"/>
         <CaptureElement Name="captureElement" 
                         ManipulationMode="All" 
                         >
         </CaptureElement>
         <ComboBox x:Name="resolutions" PlaceholderText="Preview Settings" HorizontalAlignment="Right" VerticalAlignment="Top" Width="Auto" Visibility="Visible" SelectionChanged="resolutions_SelectionChanged"/>
+        <TextBox x:Name="debug" HorizontalAlignment="Left" Text="TextBox" VerticalAlignment="Top" Width="1338"/>
     </Grid>
 </Page>

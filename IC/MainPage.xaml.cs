@@ -24,35 +24,55 @@ namespace IC
     public sealed partial class MainPage : Page
     {
         private MediaCapturePreviewer _previewer = null;
-        private TranslateTransform dragTranslation;
-        private TranslateTransform dragTranslationCapture;
+        private ScaleTransform scaleTransform;
+        private TranslateTransform translateTranslation;
+        private TransformGroup transformGroup;
 
         public MainPage()
         {
             this.InitializeComponent();
             _previewer = new MediaCapturePreviewer(captureElement, Dispatcher);
 
-            touchRectangle.ManipulationDelta += touchRectangle_ManipulationDelta;
-            dragTranslation = new TranslateTransform();
-            touchRectangle.RenderTransform = this.dragTranslation;
-
             captureElement.ManipulationDelta += captureElement_ManipulationDelta;
-            dragTranslationCapture = new TranslateTransform();
-            captureElement.RenderTransform = this.dragTranslationCapture;
-        }
 
-        void touchRectangle_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
-        {
-            // Move the rectangle.
-            dragTranslation.X += e.Delta.Translation.X;
-            dragTranslation.Y += e.Delta.Translation.Y;
+            scaleTransform = new ScaleTransform();
+            translateTranslation = new TranslateTransform();
+
+            transformGroup = new TransformGroup();
+            transformGroup.Children.Add(scaleTransform);
+            transformGroup.Children.Add(translateTranslation);
+
+            captureElement.RenderTransform = this.transformGroup;
         }
 
         private void captureElement_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
         {
-            // Move the rectangle.
-            dragTranslationCapture.X += e.Delta.Translation.X;
-            dragTranslationCapture.Y += e.Delta.Translation.Y;
+            // Add translation delta
+            translateTranslation.X += e.Delta.Translation.X;
+            translateTranslation.Y += e.Delta.Translation.Y;
+
+            if (e.IsInertial)
+                return;
+
+            // Keep old scale transform for translation fix (https://social.msdn.microsoft.com/Forums/vstudio/en-US/63ebc273-89bc-431e-a5bd-c014128c7879/scaletransform-and-translatetransform-what-the?forum=wpf)
+            double oldCenterX = scaleTransform.CenterX;
+            double oldCenterY = scaleTransform.CenterY;
+
+            // Set the new scale center
+            scaleTransform.CenterX = e.Position.X;
+            scaleTransform.CenterY = e.Position.Y;
+
+            // Apply translation fix for continuos scale
+            translateTranslation.X += (scaleTransform.CenterX - oldCenterX) * (scaleTransform.ScaleX - 1);
+            translateTranslation.Y += (scaleTransform.CenterY - oldCenterY) * (scaleTransform.ScaleY - 1);
+
+            // Multiply scale delta
+            scaleTransform.ScaleX *= e.Delta.Scale;
+            scaleTransform.ScaleY *= e.Delta.Scale;
+
+            scaleTransform.ScaleX = Math.Max(scaleTransform.ScaleX, 0.7);
+            scaleTransform.ScaleY = Math.Max(scaleTransform.ScaleY, 0.7);
+
         }
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
