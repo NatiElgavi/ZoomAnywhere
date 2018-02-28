@@ -12,7 +12,7 @@
                         ManipulationMode="All" 
                         >
         </CaptureElement>
-        <ComboBox x:Name="resolutions" PlaceholderText="Preview Settings" HorizontalAlignment="Right" VerticalAlignment="Top" Width="Auto" Visibility="Visible" SelectionChanged="resolutions_SelectionChanged"/>
-        <TextBox x:Name="debug" HorizontalAlignment="Left" Text="TextBox" VerticalAlignment="Top" Width="1338"/>
+        <ComboBox x:Name="resolutions" PlaceholderText="Preview Settings" HorizontalAlignment="Right" VerticalAlignment="Top" Visibility="Visible" SelectionChanged="resolutions_SelectionChanged" Margin="0,0,10,0"/>
+        <TextBox x:Name="debug" Text="TextBox" VerticalAlignment="Top" HorizontalAlignment="Stretch" Width="1320" Margin="0,0,170,0"/>
     </Grid>
 </Page>
