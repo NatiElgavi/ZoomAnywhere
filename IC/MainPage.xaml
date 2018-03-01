@@ -8,11 +8,28 @@
     mc:Ignorable="d">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <CaptureElement Name="captureElement" 
+        <SplitView x:Name="Splitter" IsPaneOpen="False" PaneBackground="#7F171717" >
+            <SplitView.Pane>
+                <Grid Opacity="0.5">
+                    <ComboBox x:Name="resolutions" PlaceholderText="Preview Settings" HorizontalAlignment="Stretch" VerticalAlignment="Top" Visibility="Visible" SelectionChanged="resolutions_SelectionChanged" Margin="0,50,0,0"/>
+                </Grid>
+            </SplitView.Pane>
+            <Grid>
+                <CaptureElement x:Name="captureElement" 
                         ManipulationMode="All" 
-                        >
-        </CaptureElement>
-        <ComboBox x:Name="resolutions" PlaceholderText="Preview Settings" HorizontalAlignment="Right" VerticalAlignment="Top" Visibility="Visible" SelectionChanged="resolutions_SelectionChanged" Margin="0,0,10,0"/>
-        <TextBox x:Name="debug" Text="TextBox" VerticalAlignment="Top" HorizontalAlignment="Stretch" Width="1320" Margin="0,0,170,0"/>
+                        />
+                <TextBox x:Name="debug" Text="" VerticalAlignment="Bottom" Visibility="Collapsed"/>
+            </Grid>
+        </SplitView>
+        <StackPanel x:Name="HeaderPanel" Orientation="Horizontal" VerticalAlignment="Top" Height="43">
+            <Border Grid.Row="0" HorizontalAlignment="Stretch" Width="43">
+                <ToggleButton VerticalAlignment="Stretch" Click="ToggleButton_Click" HorizontalAlignment="Stretch" BorderBrush="{x:Null}" Background="{x:Null}">
+                    <ToggleButton.Content>
+                        <FontIcon x:Name="Hamburger" FontFamily="Segoe MDL2 Assets" Glyph="&#xE713;"/>
+                    </ToggleButton.Content>
+                </ToggleButton>
+            </Border>
+            <TextBlock x:Name="Header" Text="" Margin="0,15,0,0" />
+        </StackPanel>
     </Grid>
 </Page>

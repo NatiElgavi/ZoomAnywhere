@@ -104,7 +104,7 @@ namespace IC
             // Populate the combo box with the entries
             foreach (var property in allProperties)
             {
-                if ((property.Width > 4000) && (property.FrameRate > 25))
+                if ((property.Width > 2500) && (property.FrameRate > 25))
                 {
                     ComboBoxItem comboBoxItem = new ComboBoxItem();
                     comboBoxItem.Content = property.GetFriendlyName();
@@ -122,6 +122,11 @@ namespace IC
                 var encodingProperties = (selectedItem.Tag as StreamResolution).EncodingProperties;
                 await _previewer.SetMediaStreamPropertiesAsync(MediaStreamType.VideoPreview, encodingProperties);
             }
+        }
+
+        private void ToggleButton_Click(object sender, RoutedEventArgs e)
+        {
+            Splitter.IsPaneOpen = !Splitter.IsPaneOpen;
         }
     }
 }
