@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -95,15 +96,19 @@ namespace IC
 
         private void PopulateResolutionsComboBox()
         {
+            Debug.WriteLine("Iterating resolutions from: {0}", _previewer.MediaCapture.VideoDeviceController.Id);
             // Query all properties of the device
             IEnumerable<StreamResolution> allProperties = _previewer.MediaCapture.VideoDeviceController.GetAvailableMediaStreamProperties(MediaStreamType.VideoPreview).Select(x => new StreamResolution(x));
 
             // Order them by resolution then frame rate
             allProperties = allProperties.OrderByDescending(x => x.Height * x.Width).ThenByDescending(x => x.FrameRate);
+             
 
             // Populate the combo box with the entries
             foreach (var property in allProperties)
             {
+                Debug.WriteLine(" - {0} x {1} @ {2} FPS", property.Height, property.Width, property.FrameRate);
+
                 if ((property.Width > 2500) && (property.FrameRate > 25))
                 {
                     ComboBoxItem comboBoxItem = new ComboBoxItem();
@@ -112,6 +117,14 @@ namespace IC
                     resolutions.Items.Add(comboBoxItem);
                 }
             }
+
+            const string logitechBrioVidAndPid = "VID_046D&PID_085E";
+
+            if (!_previewer.MediaCapture.VideoDeviceController.Id.ToLower().Contains(logitechBrioVidAndPid.ToLower()))
+                throw new Exception("Not the Brio!!");
+
+            if (resolutions.Items.Count == 0)
+                throw new Exception("Resolution missing");
         }
 
         private async void resolutions_SelectionChanged(object sender, SelectionChangedEventArgs e)

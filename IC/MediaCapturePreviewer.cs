@@ -67,7 +67,6 @@ namespace IC
             }
         }
 
-
         /// <summary>
         /// Initializes the MediaCapture, starts preview.
         /// </summary>
