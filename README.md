@@ -1,5 +1,6 @@
 # ZoomAnywhere
 ZoomAnywhere is a camera application that lets you zoom anywhere (instead of just the center) on a live camera feed. 
+To run the application, open the IC solution file using Visual Studio 2017.
 
 As a father for a visually impaired girl, I became aware of the technical solutions available for the visually impaired. 
 A common solution is a personal CCTV device like this one - https://www.enhancedvision.com/shop/low-vision-products/acrobat-hd-ultra-lcd
