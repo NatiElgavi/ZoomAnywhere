@@ -20,6 +20,8 @@ using Windows.UI.Xaml.Controls;
 using System;
 using Windows.Devices.Enumeration;
 using System.Diagnostics;
+using Windows.UI.Popups;
+using Windows.UI.Xaml;
 
 namespace IC
 {
@@ -104,6 +106,13 @@ namespace IC
                         }
                     }
                 }
+            }
+
+            if (MediaCapture == null)
+            {
+                var dialog = new MessageDialog("Could not initialize Logitech Brio 4K web cam.");
+                await dialog.ShowAsync();
+                Application.Current.Exit();
             }
         }
 
