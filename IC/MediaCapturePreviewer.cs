@@ -95,12 +95,14 @@ namespace IC
             }
         }
 
+
         /// <summary>
         /// Initializes the MediaCapture, starts preview.
         /// </summary>
         public async Task InitializeCameraAsync()
         {
-            const string logitechBrioVidAndPid = "VID_046D&PID_085E";
+            //const string logitechBrioVidAndPid = "VID_046D&PID_085E";
+            const string logitechBrioVidAndPid = "VID_046D&PID_0843";//ofir
             if (devices == null)
             {
                 devices = await DeviceInformation.FindAllAsync(DeviceClass.VideoCapture);

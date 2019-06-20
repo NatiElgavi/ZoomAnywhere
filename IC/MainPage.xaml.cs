@@ -108,7 +108,8 @@ namespace IC
             {
                 Debug.WriteLine(" - {0} x {1} @ {2} FPS", property.Height, property.Width, property.FrameRate);
 
-                if ((property.Width > 2500) && (property.FrameRate > 25))
+                //if ((property.Width > 2500) && (property.FrameRate > 25))
+                if ((property.Width > 1919) && (property.FrameRate > 25))//ofir
                 {
                     ComboBoxItem comboBoxItem = new ComboBoxItem();
                     comboBoxItem.Content = property.GetFriendlyName();
@@ -117,7 +118,8 @@ namespace IC
                 }
             }
 
-            const string logitechBrioVidAndPid = "VID_046D&PID_085E";
+            //const string logitechBrioVidAndPid = "VID_046D&PID_085E";
+            const string logitechBrioVidAndPid = "VID_046D&PID_0843";//ofir
 
             if (!_previewer.MediaCapture.VideoDeviceController.Id.ToLower().Contains(logitechBrioVidAndPid.ToLower()))
                 throw new Exception("Not the Brio!!");
