@@ -22,6 +22,8 @@ using Windows.Devices.Enumeration;
 using System.Diagnostics;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
+using Windows.Media.Capture.Frames;
+using System.Linq;
 
 namespace IC
 {
@@ -53,9 +55,33 @@ namespace IC
             // Apply desired stream properties
             await MediaCapture.VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType.VideoPreview, encodingProperties);
 
+            // Find the sources 
+            var allGroups = await MediaFrameSourceGroup.FindAllAsync();
+            var sourceGroups = allGroups.Select(g => new
+            {
+                Group = g,
+                SourceInfo = g.SourceInfos.FirstOrDefault(i => i.SourceKind == MediaFrameSourceKind.Color)
+            }).Where(g => g.SourceInfo != null).ToList();
+
+            if (sourceGroups.Count == 0)
+            {
+                // No camera sources found
+                return;
+            }
+            var selectedSource = sourceGroups.FirstOrDefault();
+
             // Recreate the CaptureElement pipeline and restart the preview
             _previewControl.Source = MediaCapture;
-            await MediaCapture.StartPreviewAsync();
+            var settings = new MediaCaptureInitializationSettings()
+            {
+                SourceGroup = selectedSource.Group,
+                SharingMode = MediaCaptureSharingMode.ExclusiveControl,
+                StreamingCaptureMode = StreamingCaptureMode.Video,
+                MemoryPreference = MediaCaptureMemoryPreference.Cpu
+            };
+            await MediaCapture.InitializeAsync(settings);
+
+//            await MediaCapture.StartPreviewAsync();
         }
 
         private void ListDeviceDetails()
