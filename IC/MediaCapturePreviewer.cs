@@ -70,15 +70,41 @@ namespace IC
             }
         }
 
-        /// <summary>
-        /// Initializes the MediaCapture, starts preview.
-        /// </summary>
-        public async Task InitializeCameraAsync()
+        public async Task SetPreferedDevice(String deviceName)
         {
-            const string logitechBrioVidAndPid = "VID_046D&PID_085E";
+            DeviceInformation newPreferedDevice = null;
+
             if (devices == null)
             {
                 devices = await DeviceInformation.FindAllAsync(DeviceClass.VideoCapture);
+            }
+
+            foreach (var device in devices)
+            {
+                if (device.Name == deviceName)
+                {
+                    newPreferedDevice = device;
+                    break;
+                }
+            }
+
+            await SetPreferedDevice(newPreferedDevice);
+        }
+
+
+        public async Task SetPreferedDevice(DeviceInformation newPreferedDevice)
+        {
+            if (newPreferedDevice != null)
+            {
+                preferedDevice = newPreferedDevice;
+            }
+            else
+            {
+                const string logitechBrioVidAndPid = "VID_046D&PID_085E";
+                if (devices == null)
+                {
+                    devices = await DeviceInformation.FindAllAsync(DeviceClass.VideoCapture);
+                }
 
                 // Try to find a logitech Brio cam
                 DeviceInformation logitechBrioDevice = null;
@@ -94,32 +120,38 @@ namespace IC
                 }
 
 
-                DeviceInformation preferedDevice = (logitechBrioDevice != null) ? logitechBrioDevice : alternativeDevice;
+                preferedDevice = (logitechBrioDevice != null) ? logitechBrioDevice : alternativeDevice;
+            }
+        }
 
-                if (preferedDevice != null)
+        /// <summary>
+        /// Initializes the MediaCapture, starts preview.
+        /// </summary>
+        public async Task InitializeCameraAsync()
+        {
+            if (preferedDevice != null)
+            {
+                MediaCapture = new MediaCapture();
+                MediaCapture.Failed += MediaCapture_Failed;
+
+                try
                 {
-                    MediaCapture = new MediaCapture();
-                    MediaCapture.Failed += MediaCapture_Failed;
+                    //await MediaCapture.InitializeAsync();
+                    await MediaCapture.InitializeAsync(
+                        new MediaCaptureInitializationSettings
+                        {
+                            VideoDeviceId = preferedDevice.Id
+                        }
+                    );
 
-                    try
-                    {
-                        //await MediaCapture.InitializeAsync();
-                        await MediaCapture.InitializeAsync(
-                            new MediaCaptureInitializationSettings
-                            {
-                                VideoDeviceId = preferedDevice.Id
-                            }
-                        );
-
-                        _previewControl.Source = MediaCapture;
-                        await MediaCapture.StartPreviewAsync();
-                        IsPreviewing = true;
-                    }
-                    catch (UnauthorizedAccessException)
-                    {
-                        // This can happen if access to the camera has been revoked.
-                        await CleanupCameraAsync();
-                    }
+                    _previewControl.Source = MediaCapture;
+                    await MediaCapture.StartPreviewAsync();
+                    IsPreviewing = true;
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    // This can happen if access to the camera has been revoked.
+                    await CleanupCameraAsync();
                 }
             }
 

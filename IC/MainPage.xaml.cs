@@ -78,6 +78,26 @@ namespace IC
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
+            string preferedDevice = "Logitech BRIO";
+
+            Windows.Storage.StorageFolder storageFolder = Windows.Storage.ApplicationData.Current.LocalFolder;
+            string fileName = "PreferedDevice.txt";
+            var item = await storageFolder.TryGetItemAsync(fileName);
+
+            if (item != null)   // File exists
+            {
+                Windows.Storage.StorageFile preferedDeviceFile = await storageFolder.GetFileAsync(fileName);
+                preferedDevice = await Windows.Storage.FileIO.ReadTextAsync(preferedDeviceFile);
+            }
+
+            await _previewer.SetPreferedDevice(preferedDevice);
+
+            if (_previewer.preferedDevice != null)
+            {
+                Windows.Storage.StorageFile preferedDeviceFile = await storageFolder.CreateFileAsync(fileName, Windows.Storage.CreationCollisionOption.ReplaceExisting);
+                await Windows.Storage.FileIO.WriteTextAsync(preferedDeviceFile, _previewer.preferedDevice.Name);
+            }
+
             await _previewer.InitializeCameraAsync();
 
             if (_previewer.IsPreviewing)
