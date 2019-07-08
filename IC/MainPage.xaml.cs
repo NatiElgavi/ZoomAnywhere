@@ -128,6 +128,8 @@ namespace IC
 
         private void PopulateResolutionsComboBox()
         {
+            resolutions.Items.Clear();
+
             Debug.WriteLine("Iterating resolutions from: {0}", _previewer.MediaCapture.VideoDeviceController.Id);
             // Query all properties of the device
             IEnumerable<StreamResolution> allProperties = _previewer.MediaCapture.VideoDeviceController.GetAvailableMediaStreamProperties(MediaStreamType.VideoPreview).Select(x => new StreamResolution(x));
