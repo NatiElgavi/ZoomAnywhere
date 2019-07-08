@@ -175,5 +175,22 @@ namespace IC
         {
             Splitter.IsPaneOpen = !Splitter.IsPaneOpen;
         }
+
+        private async void devices_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var selectedItem = (sender as ComboBox).SelectedItem as ComboBoxItem;
+            var device = (selectedItem.Tag as Windows.Devices.Enumeration.DeviceInformation);
+            await _previewer.SetPreferedDevice(device);
+            await _previewer.InitializeCameraAsync();
+            PopulateResolutionsComboBox();
+            var desiredItem = resolutions.Items[0] as ComboBoxItem;
+            var encodingProperties = (desiredItem.Tag as StreamResolution).EncodingProperties;
+            await _previewer.SetMediaStreamPropertiesAsync(MediaStreamType.VideoPreview, encodingProperties);
+            Windows.Storage.StorageFolder storageFolder = Windows.Storage.ApplicationData.Current.LocalFolder;
+            string fileName = "PreferedDevice.txt";
+            Windows.Storage.StorageFile preferedDeviceFile = await storageFolder.CreateFileAsync(fileName, Windows.Storage.CreationCollisionOption.ReplaceExisting);
+            await Windows.Storage.FileIO.WriteTextAsync(preferedDeviceFile, _previewer.preferedDevice.Name);
+
+        }
     }
 }
