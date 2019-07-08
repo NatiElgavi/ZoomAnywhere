@@ -11,7 +11,8 @@
         <SplitView x:Name="Splitter" IsPaneOpen="False" PaneBackground="#7F171717" >
             <SplitView.Pane>
                 <Grid Opacity="0.5">
-                    <ComboBox x:Name="resolutions" PlaceholderText="Preview Settings" HorizontalAlignment="Stretch" VerticalAlignment="Top" Visibility="Visible" SelectionChanged="resolutions_SelectionChanged" Margin="0,50,0,0"/>
+                    <ComboBox x:Name="devices" PlaceholderText="Camera Devices" HorizontalAlignment="Stretch" VerticalAlignment="Top" Visibility="Visible" SelectionChanged="devices_SelectionChanged" Margin="0,50,0,0"/>
+                    <ComboBox x:Name="resolutions" PlaceholderText="Preview Settings" HorizontalAlignment="Stretch" VerticalAlignment="Top" Visibility="Visible" SelectionChanged="resolutions_SelectionChanged" Margin="0,100,0,0"/>
                 </Grid>
             </SplitView.Pane>
             <Grid>
