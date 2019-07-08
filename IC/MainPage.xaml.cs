@@ -83,7 +83,7 @@ namespace IC
             if (_previewer.IsPreviewing)
             {
                 PopulateResolutionsComboBox();
-                var desiredItem = resolutions.Items[resolutions.Items.Count - 1] as ComboBoxItem;
+                var desiredItem = resolutions.Items[0] as ComboBoxItem;
                 var encodingProperties = (desiredItem.Tag as StreamResolution).EncodingProperties;
                 await _previewer.SetMediaStreamPropertiesAsync(MediaStreamType.VideoPreview, encodingProperties);
             }
