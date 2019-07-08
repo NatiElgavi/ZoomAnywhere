@@ -83,9 +83,21 @@ namespace IC
             if (_previewer.IsPreviewing)
             {
                 PopulateResolutionsComboBox();
+                PopulateDevicesComboBox();
                 var desiredItem = resolutions.Items[0] as ComboBoxItem;
                 var encodingProperties = (desiredItem.Tag as StreamResolution).EncodingProperties;
                 await _previewer.SetMediaStreamPropertiesAsync(MediaStreamType.VideoPreview, encodingProperties);
+            }
+        }
+
+        private void PopulateDevicesComboBox()
+        {
+            foreach (var device in _previewer.devices)
+            {
+                ComboBoxItem comboBoxItem = new ComboBoxItem();
+                comboBoxItem.Content = device.Name;
+                comboBoxItem.Tag = device;
+                devices.Items.Add(comboBoxItem);
             }
         }
 

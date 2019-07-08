@@ -39,7 +39,8 @@ namespace IC
         public bool IsPreviewing { get; private set; }
         public bool IsRecording { get; set; }
         public MediaCapture MediaCapture { get; private set; }
-        DeviceInformationCollection devices;
+        public DeviceInformationCollection devices;
+        public DeviceInformation preferedDevice { get; private set; }
 
         /// <summary>
         /// Sets encoding properties on a camera stream. Ensures CaptureElement and preview stream are stopped before setting properties.
