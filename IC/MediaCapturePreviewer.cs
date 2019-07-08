@@ -78,32 +78,46 @@ namespace IC
             if (devices == null)
             {
                 devices = await DeviceInformation.FindAllAsync(DeviceClass.VideoCapture);
+
+                // Try to find a logitech Brio cam
+                DeviceInformation logitechBrioDevice = null;
+                DeviceInformation alternativeDevice = null;
+
                 foreach (var device in devices)
                 {
+                    alternativeDevice = device;
                     if (device.Id.Contains(logitechBrioVidAndPid))
                     {
-                        MediaCapture = new MediaCapture();
-                        MediaCapture.Failed += MediaCapture_Failed;
+                        logitechBrioDevice = device;
+                    }
+                }
 
-                        try
-                        {
-                            //await MediaCapture.InitializeAsync();
-                            await MediaCapture.InitializeAsync(
-                                new MediaCaptureInitializationSettings
-                                {
-                                    VideoDeviceId = device.Id
-                                }
-                            );
 
-                            _previewControl.Source = MediaCapture;
-                            await MediaCapture.StartPreviewAsync();
-                            IsPreviewing = true;
-                        }
-                        catch (UnauthorizedAccessException)
-                        {
-                            // This can happen if access to the camera has been revoked.
-                            await CleanupCameraAsync();
-                        }
+                DeviceInformation preferedDevice = (logitechBrioDevice != null) ? logitechBrioDevice : alternativeDevice;
+
+                if (preferedDevice != null)
+                {
+                    MediaCapture = new MediaCapture();
+                    MediaCapture.Failed += MediaCapture_Failed;
+
+                    try
+                    {
+                        //await MediaCapture.InitializeAsync();
+                        await MediaCapture.InitializeAsync(
+                            new MediaCaptureInitializationSettings
+                            {
+                                VideoDeviceId = preferedDevice.Id
+                            }
+                        );
+
+                        _previewControl.Source = MediaCapture;
+                        await MediaCapture.StartPreviewAsync();
+                        IsPreviewing = true;
+                    }
+                    catch (UnauthorizedAccessException)
+                    {
+                        // This can happen if access to the camera has been revoked.
+                        await CleanupCameraAsync();
                     }
                 }
             }
